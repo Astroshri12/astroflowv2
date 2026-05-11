@@ -1,64 +1,66 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex min-h-screen flex-col bg-[var(--bg)] text-[var(--text)]">
+      <header className="border-b border-[color-mix(in_oklab,white_10%,transparent)] px-6 py-10">
+        <div className="mx-auto flex max-w-4xl flex-col gap-4">
+          <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.35em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+            AstroFlow
+          </p>
+          <h1 className="font-[family-name:var(--font-orbitron)] text-3xl tracking-wide sm:text-4xl">
+            Aerospace mission intelligence & structural screening
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="max-w-2xl font-[family-name:var(--font-rajdhani)] text-base leading-relaxed text-[color-mix(in_oklab,var(--text)_78%,transparent)]">
+            Explore documented mission failures, dashboards, and AI-assisted pattern analysis —
+            or run the multi-step physics + archive fusion analyzer for rocket, missile, and
+            aircraft sizing exercises.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </header>
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-6 py-12">
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Link
+            href="/intel"
+            className="clip-panel group border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-8 transition-colors hover:border-[color-mix(in_oklab,white_22%,transparent)]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <h2 className="font-[family-name:var(--font-orbitron)] text-xl text-[var(--text)]">
+              Mission intelligence
+            </h2>
+            <p className="mt-3 font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
+              36 archived failures · dashboards · filters · timeline · AI Q&amp;A over the
+              database.
+            </p>
+            <span className="mt-6 inline-block font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-[var(--accent)]">
+              Open intelligence suite →
+            </span>
+          </Link>
+          <Link
+            href="/analyze"
+            className="clip-panel group border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-8 transition-colors hover:border-[color-mix(in_oklab,white_22%,transparent)]"
           >
-            Documentation
-          </a>
+            <h2 className="font-[family-name:var(--font-orbitron)] text-xl text-[var(--text)]">
+              Structural analysis
+            </h2>
+            <p className="mt-3 font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
+              Three-step workflow: pick vehicle, enter parameters, view fused physics +
+              archive verdict with Claude interpretation.
+            </p>
+            <span className="mt-6 inline-block font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-[var(--accent)]">
+              Launch analyzer →
+            </span>
+          </Link>
         </div>
+        <p className="font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_50%,transparent)]">
+          <a
+            className="text-[color-mix(in_oklab,var(--text)_70%,transparent)] underline decoration-[color-mix(in_oklab,white_25%,transparent)] hover:text-[var(--accent)]"
+            href="/api/export/missions"
+            download="AstroFlow_Mission_Archive.html"
+          >
+            Download mission archive (HTML)
+          </a>{" "}
+          — same table as Mission intelligence, for offline use.
+        </p>
       </main>
     </div>
   );
