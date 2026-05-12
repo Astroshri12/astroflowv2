@@ -25,8 +25,8 @@ export function SelectScreen() {
             Choose your vehicle class
           </h1>
           <p className="mt-4 font-[family-name:var(--font-rajdhani)] text-base leading-relaxed text-[color-mix(in_oklab,var(--text)_75%,transparent)]">
-            AstroFlow applies textbook structural and aerodynamic screening rules,
-            then summarizes findings with an AI co-pilot tuned for students.
+            AstroFlow applies textbook structural and aerodynamic screening rules, then fuses the
+            result with the documented mission-failure archive for a clear verdict.
           </p>
         </header>
 

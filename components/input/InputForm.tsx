@@ -27,7 +27,7 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
         </div>
       </div>
 
-      <div className="clip-panel border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-6 sm:p-8">
+      <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--surface)] p-6 sm:p-8">
         <h2 className="font-[family-name:var(--font-orbitron)] text-xl tracking-wide text-[var(--text)]">
           {VEHICLE_LABEL[vType]} parameters
         </h2>
@@ -56,7 +56,7 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
                   const v = parseFloat(e.target.value);
                   if (!Number.isNaN(v)) onChange(f.key, v);
                 }}
-                className="rounded-sm border border-[color-mix(in_oklab,white_14%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-sm text-[var(--text)] outline-none transition-colors focus:border-[color-mix(in_oklab,var(--accent)_50%,transparent)] focus:ring-1 focus:ring-[color-mix(in_oklab,white_18%,transparent)]"
+                className="rounded-sm border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-sm text-[var(--text)] outline-none transition-colors focus:border-[color-mix(in_oklab,var(--accent)_50%,transparent)] focus:ring-1 focus:ring-[color-mix(in_oklab,var(--rim)_18%,transparent)]"
               />
             </label>
           ))}

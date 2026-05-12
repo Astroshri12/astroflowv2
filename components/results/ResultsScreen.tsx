@@ -3,84 +3,23 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { buildUserPrompt } from "@/lib/prompt";
 import { VEHICLE_LABEL } from "@/lib/constants";
 import { AppShell } from "@/components/layout/AppShell";
 import { MetricCard } from "@/components/results/MetricCard";
 import { VerdictBanner } from "@/components/results/VerdictBanner";
-import { AiAnalysisPanel } from "@/components/results/AiAnalysisPanel";
 import { MissionHistoryPanel } from "@/components/results/MissionHistoryPanel";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { useAstroFlow } from "@/components/providers/AstroFlowProvider";
 
 export function ResultsScreen() {
   const router = useRouter();
-  const {
-    vType,
-    inputs,
-    result,
-    aiText,
-    busy,
-    analysisRunId,
-    aiSyncedRunId,
-    setAiFromApi,
-    setBusy,
-    resetForNewAnalysis,
-    markAiSynced,
-  } = useAstroFlow();
+  const { vType, result, analysisRunId, resetForNewAnalysis } = useAstroFlow();
 
   useEffect(() => {
     if (!vType || !result || analysisRunId === 0) {
       router.replace("/analyze/input");
     }
   }, [vType, result, analysisRunId, router]);
-
-  useEffect(() => {
-    if (!vType || !result || analysisRunId === 0) return;
-    if (aiSyncedRunId === analysisRunId) return;
-
-    const ac = new AbortController();
-    const userPrompt = buildUserPrompt(vType, inputs, result);
-    const runId = analysisRunId;
-
-    setBusy(true);
-    setAiFromApi("");
-
-    (async () => {
-      try {
-        const res = await fetch("/api/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userPrompt }),
-          signal: ac.signal,
-        });
-        const data = (await res.json()) as { text?: string; error?: string };
-        if (ac.signal.aborted) return;
-        const text = data.text ?? data.error ?? "No response.";
-        setAiFromApi(text);
-        markAiSynced(runId);
-      } catch (e) {
-        if (ac.signal.aborted) return;
-        setAiFromApi(
-          e instanceof Error ? e.message : "Failed to load AI analysis.",
-        );
-        markAiSynced(runId);
-      } finally {
-        if (!ac.signal.aborted) setBusy(false);
-      }
-    })();
-
-    return () => ac.abort();
-  }, [
-    analysisRunId,
-    aiSyncedRunId,
-    vType,
-    inputs,
-    result,
-    setAiFromApi,
-    setBusy,
-    markAiSynced,
-  ]);
 
   if (!vType || !result || analysisRunId === 0) {
     return (
@@ -138,8 +77,6 @@ export function ResultsScreen() {
             ))}
           </div>
         </section>
-
-        <AiAnalysisPanel busy={busy} text={aiText} />
 
         <div className="flex flex-wrap gap-3">
           <PrimaryButton

@@ -11,7 +11,7 @@ type Props = {
 export function AppShell({ step, children }: Props) {
   return (
     <div className="flex min-h-screen flex-col bg-[var(--bg)] text-[var(--text)]">
-      <header className="border-b border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_92%,var(--bg))] backdrop-blur-sm">
+      <header className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_92%,var(--bg))] backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <Link href="/" className="group flex items-baseline gap-3">
             <span className="font-[family-name:var(--font-orbitron)] text-lg font-bold tracking-[0.2em] text-[var(--text)]">
@@ -28,7 +28,7 @@ export function AppShell({ step, children }: Props) {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">
         {children}
       </main>
-      <footer className="border-t border-[color-mix(in_oklab,white_8%,transparent)] py-6 text-center font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-widest text-[color-mix(in_oklab,var(--text)_45%,transparent)]">
+      <footer className="border-t border-[color-mix(in_oklab,var(--rim)_8%,transparent)] py-6 text-center font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-widest text-[color-mix(in_oklab,var(--text)_45%,transparent)]">
         AstroFlow · Educational physics screening · Not flight certification
       </footer>
     </div>

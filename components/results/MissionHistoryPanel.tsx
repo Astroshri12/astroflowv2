@@ -11,7 +11,7 @@ export function MissionHistoryPanel({ historical }: Props) {
     historical;
 
   return (
-    <section className="clip-panel border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-6">
+    <section className="clip-panel border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--surface)] p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h2 className="font-[family-name:var(--font-orbitron)] text-lg tracking-wide text-[var(--text)]">
           Mission failure archive analogs
@@ -34,7 +34,7 @@ export function MissionHistoryPanel({ historical }: Props) {
         {neighbors.map((n) => (
           <li
             key={n.id}
-            className="flex flex-col gap-2 border-l-2 border-[color-mix(in_oklab,white_18%,transparent)] pl-4"
+            className="flex flex-col gap-2 border-l-2 border-[color-mix(in_oklab,var(--rim)_18%,transparent)] pl-4"
           >
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-[family-name:var(--font-orbitron)] text-sm text-[var(--text)]">

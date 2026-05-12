@@ -12,7 +12,7 @@ export function MetricCard({ metric }: Props) {
 
   return (
     <div
-      className={`clip-panel flex flex-col gap-2 border border-[color-mix(in_oklab,white_10%,transparent)] bg-[var(--surface)] p-4 pt-5 shadow-inner ${border} border-t-2`}
+      className={`clip-panel flex flex-col gap-2 border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-4 pt-5 shadow-inner ${border} border-t-2`}
     >
       <div className="flex items-start justify-between gap-2">
         <span className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wider text-[color-mix(in_oklab,var(--text)_65%,transparent)]">
@@ -21,11 +21,11 @@ export function MetricCard({ metric }: Props) {
         <span
           className={`shrink-0 rounded-sm px-2 py-0.5 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${
             metric.ok
-              ? "bg-[color-mix(in_oklab,var(--pass)_18%,transparent)] text-[var(--pass)]"
+              ? "bg-[color-mix(in_oklab,var(--accent)_14%,transparent)] text-[var(--accent)]"
               : "bg-[color-mix(in_oklab,var(--fail)_18%,transparent)] text-[var(--fail)]"
           }`}
         >
-          {metric.ok ? "✓ OK" : "✗ FLAG"}
+          {metric.ok ? "OK" : "FLAG"}
         </span>
       </div>
       <div className="flex items-baseline gap-2">

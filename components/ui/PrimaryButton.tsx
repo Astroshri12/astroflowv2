@@ -22,11 +22,11 @@ export function PrimaryButton({
 
   const variants: Record<NonNullable<Props["variant"]>, string> = {
     primary:
-      "bg-[var(--accent)] text-[var(--on-accent)] shadow-[0_1px_0_rgba(255,255,255,0.06)] hover:opacity-90",
+      "bg-[var(--accent)] text-[var(--on-accent)] shadow-[0_1px_0_color-mix(in_oklab,var(--rim)_22%,transparent)] hover:opacity-90",
     ghost:
       "border border-[color-mix(in_oklab,var(--cyan)_40%,transparent)] bg-[color-mix(in_oklab,var(--surface)_88%,transparent)] text-[var(--text)] hover:border-[color-mix(in_oklab,var(--text)_35%,transparent)]",
     danger:
-      "border border-[color-mix(in_oklab,var(--text-muted)_45%,transparent)] text-[color-mix(in_oklab,var(--text)_82%,white)] hover:bg-[color-mix(in_oklab,white_6%,transparent)]",
+      "border border-[color-mix(in_oklab,var(--text-muted)_45%,transparent)] text-[color-mix(in_oklab,var(--text)_82%,var(--rim))] hover:bg-[color-mix(in_oklab,var(--rim)_6%,transparent)]",
   };
 
   return (

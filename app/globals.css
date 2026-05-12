@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
-/* Minimal monochromatic (zinc-scale) — single-hue neutrals only */
+/* Light theme — crisp white surfaces, navy ink + steel blues */
 :root {
-  --bg: #0c0c0d;
-  --surface: #18181b;
-  --surface-muted: #141416;
-  --accent: #e4e4e7;
-  --cyan: #71717a;
-  --text: #d4d4d8;
-  --text-muted: #a1a1aa;
-  --pass: #f4f4f5;
-  --fail: #71717a;
-  --marginal: #a1a1aa;
-  --on-accent: #0c0c0d;
-  --border: #27272a;
-  --input-bg: #141416;
+  --bg: #f0f4fb;
+  --surface: #ffffff;
+  --surface-muted: #e8eef7;
+  --accent: #1e3a5f;
+  --cyan: #4a6fa5;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --pass: #166534;
+  --fail: #b91c1c;
+  --marginal: #a16207;
+  --on-accent: #ffffff;
+  --border: #c7d6eb;
+  --input-bg: #ffffff;
+  /* Mix into transparent for borders / hovers — deep navy */
+  --rim: #0c1929;
   --clip: polygon(
     0 0,
     calc(100% - 14px) 0,
@@ -47,7 +49,7 @@
     filter: drop-shadow(0 0 6px color-mix(in oklab, var(--pass) 35%, transparent));
   }
   50% {
-    filter: drop-shadow(0 0 14px color-mix(in oklab, white 22%, transparent));
+    filter: drop-shadow(0 0 14px color-mix(in oklab, var(--rim) 14%, transparent));
   }
 }
 
@@ -98,7 +100,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in oklab, white 12%, transparent),
+    color-mix(in oklab, var(--rim) 6%, transparent),
     transparent
   );
   animation: scan 2.8s linear infinite;

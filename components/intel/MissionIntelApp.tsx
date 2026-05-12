@@ -18,35 +18,73 @@ import {
 import type { MissionFailure, FailureCategory } from "@/types/mission-intel";
 import { MISSION_FAILURES } from "@/data/mission-failures";
 
-/** Distinct chart tones — all neutral zinc steps (monochrome). */
+/** Distinct chart tones — navy ladder for contrast on white surfaces. */
 const CAT_COLORS: Record<FailureCategory, string> = {
-  propulsion: "#e4e4e7",
-  software: "#d4d4d8",
-  structural: "#c4c4c8",
-  human: "#a1a1aa",
-  guidance: "#94949c",
-  design: "#86868d",
-  environmental: "#78787f",
-  comms: "#6b6b70",
+  propulsion: "#1e3a5f",
+  software: "#2c4a6e",
+  structural: "#3d5a80",
+  human: "#4d6b92",
+  guidance: "#5f7da3",
+  design: "#7a93b8",
+  environmental: "#9eb0cd",
+  comms: "#c5d0e3",
 };
 
 const SEV_COLORS: Record<string, string> = {
-  CRITICAL: "#fafafa",
-  HIGH: "#d4d4d8",
-  MEDIUM: "#a1a1aa",
-  LOW: "#71717a",
+  CRITICAL: "#0c1929",
+  HIGH: "#1e3a5f",
+  MEDIUM: "#3d5a80",
+  LOW: "#94a3b8",
 };
 
 const CHART_COLS = [
-  "#e4e4e7",
-  "#c4c4c8",
-  "#a1a1aa",
-  "#86868d",
-  "#71717a",
-  "#52525b",
-  "#3f3f46",
-  "#27272a",
+  "#dce5f2",
+  "#b8c8e0",
+  "#8fa6c9",
+  "#5f7da3",
+  "#3d5a80",
+  "#2c4a6e",
+  "#1e3a5f",
 ];
+
+type StatGlyphVariant = "missions" | "cost" | "fatalities" | "critical";
+
+function StatGlyph({ variant }: { variant: StatGlyphVariant }) {
+  const cls = "h-8 w-8 shrink-0 text-[var(--accent)]";
+  switch (variant) {
+    case "missions":
+      return (
+        <svg className={cls} viewBox="0 0 32 32" fill="currentColor" aria-hidden>
+          <rect x="5" y="18" width="5" height="10" rx="1" opacity="0.85" />
+          <rect x="13.5" y="12" width="5" height="16" rx="1" />
+          <rect x="22" y="6" width="5" height="22" rx="1" opacity="0.75" />
+        </svg>
+      );
+    case "cost":
+      return (
+        <svg className={cls} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+          <rect x="6" y="7" width="20" height="18" rx="2" />
+          <path d="M10 12h12M10 16h12M10 20h8" strokeLinecap="round" />
+        </svg>
+      );
+    case "fatalities":
+      return (
+        <svg className={cls} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <path d="M16 7 26 24H6L16 7Z" strokeLinejoin="round" />
+          <path d="M16 12v7M16 22v1" strokeLinecap="round" />
+        </svg>
+      );
+    case "critical":
+      return (
+        <svg className={cls} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+          <circle cx="16" cy="16" r="10" />
+          <circle cx="16" cy="16" r="4" fill="currentColor" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 
 function Pill({ cat }: { cat: FailureCategory }) {
   const c = CAT_COLORS[cat] ?? "#888";
@@ -85,18 +123,18 @@ function MissionModal({
   return (
     <div
       role="presentation"
-      className="fixed inset-0 z-[500] flex items-center justify-center bg-black/75 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-[500] flex items-center justify-center bg-[color-mix(in_oklab,var(--rim)_52%,transparent)] p-4 backdrop-blur-md"
       onClick={onClose}
       aria-hidden
     >
       <div
         role="dialog"
-        className="relative max-h-[88vh] w-full max-w-[780px] overflow-y-auto rounded-lg border border-[color-mix(in_oklab,white_14%,transparent)] bg-[var(--surface)] p-8 text-left shadow-[0_16px_48px_rgba(0,0,0,0.4)]"
+        className="relative max-h-[88vh] w-full max-w-[780px] overflow-y-auto rounded-lg border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-left shadow-[0_16px_48px_color-mix(in_oklab,var(--rim)_16%,transparent)]"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
-          className="absolute right-4 top-4 rounded border border-[color-mix(in_oklab,white_18%,transparent)] bg-[color-mix(in_oklab,white_8%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
+          className="absolute right-4 top-4 rounded border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_8%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
           onClick={onClose}
         >
           Close
@@ -115,7 +153,7 @@ function MissionModal({
             [
               "Casualties",
               m.casualties > 0 ? (
-                <span className="text-[var(--fail)]">⚠ {m.casualties} fatalities</span>
+                <span className="text-[var(--fail)]">{m.casualties} fatalities (recorded)</span>
               ) : (
                 <span className="text-[var(--pass)]">None</span>
               ),
@@ -123,7 +161,7 @@ function MissionModal({
           ].map(([lbl, val]) => (
             <div
               key={String(lbl)}
-              className="rounded-md border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,white_4%,transparent)] p-3"
+              className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-3"
             >
               <div className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
                 {lbl}
@@ -134,22 +172,22 @@ function MissionModal({
         </div>
         <div className="mt-6 space-y-4 text-sm leading-relaxed">
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,white_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
               Failure description
             </h4>
             <p className="mt-2">{m.desc}</p>
           </section>
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,white_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
               Root cause
             </h4>
             <p className="mt-2">{m.root}</p>
           </section>
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,white_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_75%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_75%,transparent)]">
               Lessons learned
             </h4>
-            <ul className="mt-3 space-y-2 rounded-md border border-[color-mix(in_oklab,white_12%,transparent)] bg-[color-mix(in_oklab,white_4%,transparent)] p-4">
+            <ul className="mt-3 space-y-2 rounded-md border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-4">
               {m.lessons.map((l, i) => (
                 <li key={i} className="flex gap-2 text-sm">
                   <span className="font-bold text-[var(--accent)]">›</span>
@@ -164,7 +202,7 @@ function MissionModal({
   );
 }
 
-type TabKey = "dashboard" | "missions" | "timeline" | "patterns" | "ai" | "analyzer";
+type TabKey = "dashboard" | "missions" | "timeline" | "patterns" | "analyzer";
 
 export function MissionIntelApp() {
   const [tab, setTab] = useState<TabKey>("dashboard");
@@ -174,9 +212,6 @@ export function MissionIntelApp() {
   const [eraF, setEraF] = useState<string>("ALL");
   const [sort, setSort] = useState<string>("year-desc");
   const [modal, setModal] = useState<MissionFailure | null>(null);
-  const [aiPr, setAiPr] = useState("");
-  const [aiOut, setAiOut] = useState("");
-  const [aiLoad, setAiLoad] = useState(false);
 
   const missions = MISSION_FAILURES;
 
@@ -233,30 +268,6 @@ export function MissionIntelApp() {
   const totalCost = useMemo(() => missions.reduce((s, m) => s + m.cost, 0), [missions]);
   const totalDeaths = useMemo(() => missions.reduce((s, m) => s + m.casualties, 0), [missions]);
 
-  const catSummary = useMemo(() => {
-    const lines = catData.map((x) => `${x.name}: ${x.value}`).join("; ");
-    return `Failure categories — ${lines}`;
-  }, [catData]);
-
-  async function runAI() {
-    if (!aiPr.trim()) return;
-    setAiLoad(true);
-    setAiOut("");
-    try {
-      const systemPrompt = `You are an aerospace failure analysis expert. The AstroFlow database contains ${missions.length} documented mission failures spanning ${Math.min(...missions.map((m) => m.year))}–${Math.max(...missions.map((m) => m.year))}. ${catSummary}. Be concise, technically precise, and bold key terms with **markdown**.`;
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userPrompt: aiPr, systemPrompt }),
-      });
-      const data = (await res.json()) as { text?: string };
-      setAiOut(data.text ?? "No response.");
-    } catch (e) {
-      setAiOut(e instanceof Error ? e.message : "Request failed.");
-    }
-    setAiLoad(false);
-  }
-
   const CATS = [...new Set(missions.map((m) => m.category))];
   const SEVS = ["CRITICAL", "HIGH", "MEDIUM", "LOW"] as const;
   const ERAS = [
@@ -275,9 +286,9 @@ export function MissionIntelApp() {
       className={`rounded px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide transition-colors ${
         tab === t
           ? highlight
-            ? "border border-[color-mix(in_oklab,white_18%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] text-[var(--text)]"
-            : "border border-[color-mix(in_oklab,white_18%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] text-[var(--accent)]"
-          : "border border-[color-mix(in_oklab,white_10%,transparent)] text-[color-mix(in_oklab,var(--text)_55%,transparent)] hover:border-[color-mix(in_oklab,white_22%,transparent)]"
+            ? "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-[var(--text)]"
+            : "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-[var(--accent)]"
+          : "border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] text-[color-mix(in_oklab,var(--text)_55%,transparent)] hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
       }`}
     >
       {label}
@@ -286,7 +297,7 @@ export function MissionIntelApp() {
 
   return (
     <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)]">
-      <header className="sticky top-0 z-[200] flex flex-wrap items-center gap-4 border-b border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_96%,transparent)] px-6 py-4 backdrop-blur-xl">
+      <header className="sticky top-0 z-[200] flex flex-wrap items-center gap-4 border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_96%,transparent)] px-6 py-4 backdrop-blur-xl">
         <div>
           <Link href="/" className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-[0.08em]">
             <span className="text-[var(--text)]">
@@ -298,21 +309,20 @@ export function MissionIntelApp() {
           </p>
         </div>
         <nav className="flex flex-wrap gap-1">
-          {tabBtn("dashboard", "📊 Dashboard")}
-          {tabBtn("missions", "🚀 Missions")}
-          {tabBtn("timeline", "⏱ Timeline")}
-          {tabBtn("patterns", "🔍 Patterns")}
-          {tabBtn("ai", "🤖 AI")}
-          {tabBtn("analyzer", "⚙ Analyzer", true)}
+          {tabBtn("dashboard", "Dashboard")}
+          {tabBtn("missions", "Missions")}
+          {tabBtn("timeline", "Timeline")}
+          {tabBtn("patterns", "Patterns")}
+          {tabBtn("analyzer", "Analyzer", true)}
         </nav>
         <div className="ml-auto flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_65%,transparent)]">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--accent)] shadow-[0_0_6px_rgba(255,255,255,0.15)]" />
+          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--accent)] shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
           LIVE
         </div>
       </header>
 
       <div className="mx-auto grid max-w-[1400px] gap-6 px-4 py-8 lg:grid-cols-[260px_1fr]">
-        <aside className="flex h-fit flex-col gap-3 rounded-lg border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_96%,var(--bg))] p-4 lg:sticky lg:top-[88px]">
+        <aside className="flex h-fit flex-col gap-3 rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_96%,var(--bg))] p-4 lg:sticky lg:top-[88px]">
           <p className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-[0.2em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
             Search & filter
           </p>
@@ -320,9 +330,9 @@ export function MissionIntelApp() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Mission, vehicle, agency…"
-            className="w-full rounded border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-xs text-[var(--text)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,transparent)]"
+            className="w-full rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-xs text-[var(--text)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,transparent)]"
           />
-          <div className="rounded-md border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
+          <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
             <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
               Category
             </p>
@@ -346,7 +356,7 @@ export function MissionIntelApp() {
               ))}
             </div>
           </div>
-          <div className="rounded-md border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
+          <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
             <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
               Era
             </p>
@@ -363,7 +373,7 @@ export function MissionIntelApp() {
               ))}
             </div>
           </div>
-          <div className="rounded-md border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
+          <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
             <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
               Severity
             </p>
@@ -387,12 +397,12 @@ export function MissionIntelApp() {
               ))}
             </div>
           </div>
-          <div className="space-y-2 border-t border-[color-mix(in_oklab,white_8%,transparent)] pt-4 font-[family-name:var(--font-space-mono)] text-[11px]">
-            <div className="flex justify-between rounded bg-[color-mix(in_oklab,white_4%,transparent)] px-2 py-2">
+          <div className="space-y-2 border-t border-[color-mix(in_oklab,var(--rim)_8%,transparent)] pt-4 font-[family-name:var(--font-space-mono)] text-[11px]">
+            <div className="flex justify-between rounded bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-2 py-2">
               <span className="text-[color-mix(in_oklab,var(--text)_55%,transparent)]">Filtered</span>
               <span className="text-[var(--accent)]">{filtered.length}</span>
             </div>
-            <div className="flex justify-between rounded bg-[color-mix(in_oklab,white_4%,transparent)] px-2 py-2">
+            <div className="flex justify-between rounded bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-2 py-2">
               <span className="text-[color-mix(in_oklab,var(--text)_55%,transparent)]">Casualties</span>
               <span className="text-[var(--accent)]">{totalDeaths}</span>
             </div>
@@ -410,7 +420,7 @@ export function MissionIntelApp() {
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="mt-2 w-full rounded-md border border-[color-mix(in_oklab,white_18%,transparent)] bg-transparent py-2.5 font-[family-name:var(--font-orbitron)] text-[11px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:bg-[color-mix(in_oklab,white_6%,transparent)]"
+            className="mt-2 w-full rounded-md border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-transparent py-2.5 font-[family-name:var(--font-orbitron)] text-[11px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:bg-[color-mix(in_oklab,var(--rim)_6%,transparent)]"
           >
             Download HTML report
           </button>
@@ -420,18 +430,40 @@ export function MissionIntelApp() {
           {tab === "dashboard" && (
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                  ["🚀", missions.length, "MISSIONS INDEXED", "Documented failures"],
-                  ["💰", `$${(totalCost / 1000).toFixed(1)}B`, "TOTAL COST LOST", "Estimated"],
-                  ["⚠", totalDeaths, "FATALITIES", "Recorded"],
-                  ["🔴", missions.filter((m) => m.severity === "CRITICAL").length, "CRITICAL EVENTS", "Max severity"],
-                ].map(([icon, val, label, sub]) => (
+                {(
+                  [
+                    {
+                      variant: "missions" as const,
+                      val: missions.length,
+                      label: "MISSIONS INDEXED",
+                      sub: "Documented failures",
+                    },
+                    {
+                      variant: "cost" as const,
+                      val: `$${(totalCost / 1000).toFixed(1)}B`,
+                      label: "TOTAL COST LOST",
+                      sub: "Estimated",
+                    },
+                    {
+                      variant: "fatalities" as const,
+                      val: totalDeaths,
+                      label: "FATALITIES",
+                      sub: "Recorded",
+                    },
+                    {
+                      variant: "critical" as const,
+                      val: missions.filter((m) => m.severity === "CRITICAL").length,
+                      label: "CRITICAL EVENTS",
+                      sub: "Max severity",
+                    },
+                  ] as const
+                ).map(({ variant, val, label, sub }) => (
                   <div
-                    key={String(label)}
-                    className="clip-panel relative overflow-hidden border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-5"
+                    key={label}
+                    className="clip-panel relative overflow-hidden border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--surface)] p-5"
                   >
-                    <div className="absolute left-0 right-0 top-0 h-px bg-[color-mix(in_oklab,white_18%,transparent)]" />
-                    <div className="text-2xl">{icon}</div>
+                    <div className="absolute left-0 right-0 top-0 h-px bg-[color-mix(in_oklab,var(--rim)_18%,transparent)]" />
+                    <StatGlyph variant={variant} />
                     <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black text-[var(--accent)]">{val}</div>
                     <div className="mt-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
                       {label}
@@ -441,7 +473,7 @@ export function MissionIntelApp() {
                 ))}
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
-                <div className="rounded-lg border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
+                <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
                   <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
                     Failure categories
                   </p>
@@ -462,35 +494,35 @@ export function MissionIntelApp() {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          background: "#18181b",
-                          border: "1px solid #3f3f46",
+                          background: "#ffffff",
+                          border: "1px solid #c7d6eb",
                           borderRadius: 6,
                           fontSize: "11px",
-                          color: "#e4e4e7",
+                          color: "#0f172a",
                         }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="rounded-lg border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
+                <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
                   <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
                     Failures by decade
                   </p>
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={decData} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.06)" />
-                      <XAxis dataKey="name" tick={{ fill: "#6a8aaa", fontSize: 10 }} />
-                      <YAxis tick={{ fill: "#6a8aaa", fontSize: 10 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(15, 23, 42, 0.08)" />
+                      <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 10 }} />
+                      <YAxis tick={{ fill: "#64748b", fontSize: 10 }} />
                       <Tooltip
                         contentStyle={{
-                          background: "#18181b",
-                          border: "1px solid #3f3f46",
+                          background: "#ffffff",
+                          border: "1px solid #c7d6eb",
                           borderRadius: 6,
                           fontSize: "11px",
-                          color: "#e4e4e7",
+                          color: "#0f172a",
                         }}
                       />
-                      <Bar dataKey="value" fill="#a1a1aa" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="value" fill="#3d5a80" radius={[3, 3, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -507,7 +539,7 @@ export function MissionIntelApp() {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="rounded border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--input-bg)] px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
+                  className="rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
                 >
                   <option value="year-desc">Year ↓</option>
                   <option value="year-asc">Year ↑</option>
@@ -515,14 +547,14 @@ export function MissionIntelApp() {
                   <option value="name">Name A–Z</option>
                 </select>
               </div>
-              <div className="overflow-x-auto rounded-lg border border-[color-mix(in_oklab,white_12%,transparent)]">
+              <div className="overflow-x-auto rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)]">
                 <table className="w-full min-w-[720px] border-collapse text-sm">
-                  <thead className="bg-[color-mix(in_oklab,white_6%,transparent)]">
+                  <thead className="bg-[color-mix(in_oklab,var(--rim)_6%,transparent)]">
                     <tr>
                       {["Mission", "Year", "Agency", "Vehicle", "Type", "Severity", "Cost", ""].map((h) => (
                         <th
                           key={h}
-                          className="border-b border-[color-mix(in_oklab,white_12%,transparent)] px-4 py-3 text-left font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_82%,white)]"
+                          className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] px-4 py-3 text-left font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_82%,var(--rim))]"
                         >
                           {h}
                         </th>
@@ -533,7 +565,7 @@ export function MissionIntelApp() {
                     {filtered.map((m) => (
                       <tr
                         key={m.id}
-                        className="cursor-pointer border-b border-[color-mix(in_oklab,white_6%,transparent)] hover:bg-[color-mix(in_oklab,white_5%,transparent)]"
+                        className="cursor-pointer border-b border-[color-mix(in_oklab,var(--rim)_6%,transparent)] hover:bg-[color-mix(in_oklab,var(--rim)_5%,transparent)]"
                         onClick={() => setModal(m)}
                       >
                         <td className="px-4 py-3 font-semibold">{m.name}</td>
@@ -550,7 +582,7 @@ export function MissionIntelApp() {
                         <td className="px-4 py-3">
                           <button
                             type="button"
-                            className="rounded border border-[color-mix(in_oklab,white_14%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] text-[color-mix(in_oklab,var(--text)_75%,transparent)]"
+                            className="rounded border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] text-[color-mix(in_oklab,var(--text)_75%,transparent)]"
                             onClick={(e) => {
                               e.stopPropagation();
                               setModal(m);
@@ -569,7 +601,7 @@ export function MissionIntelApp() {
 
           {tab === "timeline" && (
             <div className="relative pl-8">
-              <div className="absolute bottom-0 left-2 top-0 w-0.5 bg-[color-mix(in_oklab,white_22%,transparent)]" />
+              <div className="absolute bottom-0 left-2 top-0 w-0.5 bg-[color-mix(in_oklab,var(--rim)_22%,transparent)]" />
               {[...missions].sort((a, b) => a.year - b.year).map((m) => (
                 <div key={m.id} className="relative mb-6">
                   <div
@@ -578,7 +610,7 @@ export function MissionIntelApp() {
                   />
                   <button
                     type="button"
-                    className="w-full rounded-lg border border-[color-mix(in_oklab,white_10%,transparent)] bg-[var(--surface)] p-4 text-left transition-colors hover:border-[color-mix(in_oklab,white_22%,transparent)]"
+                    className="w-full rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-4 text-left transition-colors hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
                     onClick={() => setModal(m)}
                   >
                     <div className="font-[family-name:var(--font-orbitron)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">{m.year}</div>
@@ -605,21 +637,21 @@ export function MissionIntelApp() {
                   .map((d) => {
                     const pct = Math.round((d.value / missions.length) * 100);
                     return (
-                      <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,white_10%,transparent)] bg-[var(--surface)] p-5">
+                      <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
                         <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">{d.name}</div>
                         <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
                           {d.value}
                         </div>
                         <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--cyan)]">{pct}% of archive</div>
-                        <div className="mt-3 h-1 overflow-hidden rounded bg-[rgba(255,255,255,.06)]">
+                        <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
                           <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
                         </div>
                       </div>
                     );
                   })}
               </div>
-              <div className="rounded-lg border border-[color-mix(in_oklab,white_12%,transparent)] bg-[color-mix(in_oklab,white_4%,transparent)] p-6">
-                <h3 className="border-b border-[color-mix(in_oklab,white_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_78%,white)]">
+              <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-6">
+                <h3 className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_78%,var(--rim))]">
                   Key systemic insights
                 </h3>
                 <ul className="mt-4 space-y-3 text-sm leading-relaxed">
@@ -640,73 +672,11 @@ export function MissionIntelApp() {
             </div>
           )}
 
-          {tab === "ai" && (
-            <div className="rounded-lg border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--surface)] p-6">
-              <h3 className="font-[family-name:var(--font-orbitron)] text-lg text-[var(--text)]">Claude — failure intelligence</h3>
-              <p className="mt-2 font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
-                Ask questions about patterns across all indexed missions (API key required on server).
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {[
-                  { q: "Summarize the dominant failure modes by category.", short: "Dominant modes" },
-                  { q: "Which missions highlight software vs structural risk?", short: "Software vs structural" },
-                  { q: "What procedural fixes recur most often in lessons learned?", short: "Recurring fixes" },
-                ].map(({ q, short }) => (
-                  <button
-                    type="button"
-                    key={short}
-                    onClick={() => setAiPr(q)}
-                    className="rounded border border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[10px] text-[color-mix(in_oklab,var(--text)_65%,transparent)] hover:border-[color-mix(in_oklab,white_20%,transparent)]"
-                  >
-                    {short}
-                  </button>
-                ))}
-              </div>
-              <textarea
-                value={aiPr}
-                onChange={(e) => setAiPr(e.target.value)}
-                rows={4}
-                className="mt-4 w-full rounded-md border border-[color-mix(in_oklab,white_12%,transparent)] bg-[var(--input-bg)] p-4 font-[family-name:var(--font-rajdhani)] text-sm text-[var(--text)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_40%,transparent)]"
-                placeholder="Ask about mission failures, costs, systemic lessons…"
-              />
-              <div className="mt-3 flex justify-end">
-                <button
-                  type="button"
-                  onClick={runAI}
-                  disabled={aiLoad}
-                  className="rounded-md bg-[var(--accent)] px-6 py-2 font-[family-name:var(--font-orbitron)] text-[11px] font-bold uppercase tracking-wide text-[var(--on-accent)] hover:opacity-90 disabled:opacity-50"
-                >
-                  {aiLoad ? "Analyzing…" : "Analyze"}
-                </button>
-              </div>
-              <div className="mt-6 min-h-[140px] rounded-md border border-[color-mix(in_oklab,white_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_92%,transparent)] p-4 font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed">
-                {aiLoad ? (
-                  <span className="font-[family-name:var(--font-space-mono)] text-[11px] italic text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
-                    Querying mission intelligence…
-                  </span>
-                ) : aiOut ? (
-                  <div
-                    className="prose prose-invert max-w-none text-[var(--text)]"
-                    dangerouslySetInnerHTML={{
-                      __html: aiOut
-                        .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#e4e4e7">$1</strong>')
-                        .replace(/\n/g, "<br/>"),
-                    }}
-                  />
-                ) : (
-                  <span className="font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
-                    Responses appear here.
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-
           {tab === "analyzer" && (
-            <div className="clip-panel border border-[color-mix(in_oklab,white_14%,transparent)] bg-[var(--surface)] p-8 text-center">
+            <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
               <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-[var(--text)]">Structural analysis workflow</h3>
               <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
-                Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict + Claude).
+                Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
               </p>
               <Link
                 href="/analyze"

@@ -26,7 +26,7 @@ const rajdhani = Rajdhani({
 export const metadata: Metadata = {
   title: "AstroFlow — Mission Intelligence & Structural Analysis",
   description:
-    "Mission failure archive, dashboards, and fused physics + historical-risk screening with AI interpretation.",
+    "Mission failure archive, dashboards, and fused physics + historical-risk screening for structural exercises.",
 };
 
 export default function RootLayout({

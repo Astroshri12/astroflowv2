@@ -17,17 +17,17 @@ const verdictStyle: Record<
   PASS: {
     text: "text-[var(--pass)]",
     border: "border-[color-mix(in_oklab,var(--pass)_45%,transparent)]",
-    glow: "shadow-[0_0_32px_rgba(255,255,255,0.08)]",
+    glow: "shadow-[0_0_32px_color-mix(in_oklab,var(--rim)_10%,transparent)]",
   },
   MARGINAL: {
     text: "text-[var(--marginal)]",
     border: "border-[color-mix(in_oklab,var(--marginal)_50%,transparent)]",
-    glow: "shadow-[0_0_28px_rgba(255,255,255,0.05)]",
+    glow: "shadow-[0_0_28px_color-mix(in_oklab,var(--rim)_8%,transparent)]",
   },
   FAIL: {
     text: "text-[var(--fail)]",
     border: "border-[color-mix(in_oklab,var(--fail)_55%,transparent)]",
-    glow: "shadow-[0_0_24px_rgba(0,0,0,0.45)]",
+    glow: "shadow-[0_0_24px_color-mix(in_oklab,var(--fail)_18%,transparent)]",
   },
 };
 
