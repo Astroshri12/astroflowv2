@@ -600,29 +600,38 @@ export function MissionIntelApp() {
           )}
 
           {tab === "timeline" && (
-            <div className="relative pl-8">
-              <div className="absolute bottom-0 left-2 top-0 w-0.5 bg-[color-mix(in_oklab,var(--rim)_22%,transparent)]" />
-              {[...missions].sort((a, b) => a.year - b.year).map((m) => (
-                <div key={m.id} className="relative mb-6">
-                  <div
-                    className="absolute -left-6 top-2 h-3 w-3 rounded-full border-2 bg-[var(--bg)] shadow-[0_0_8px_currentColor]"
-                    style={{ borderColor: SEV_COLORS[m.severity] ?? "#a1a1aa" }}
-                  />
-                  <button
-                    type="button"
-                    className="w-full rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-4 text-left transition-colors hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
-                    onClick={() => setModal(m)}
-                  >
-                    <div className="font-[family-name:var(--font-orbitron)] text-[11px] uppercase tracking-wide text-fg-secondary">{m.year}</div>
-                    <div className="mt-1 font-[family-name:var(--font-space-mono)] text-sm font-bold">{m.name}</div>
-                    <p className="mt-2 line-clamp-3 text-sm text-fg-soft">{m.desc}</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Pill cat={m.category} />
-                      <SevDot sev={m.severity} />
+            <div className="relative">
+              <div
+                className="pointer-events-none absolute bottom-0 left-3 top-2 w-px -translate-x-1/2 bg-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
+                aria-hidden
+              />
+              <div className="flex flex-col gap-6">
+                {[...missions].sort((a, b) => a.year - b.year).map((m) => (
+                  <div key={m.id} className="relative z-[1] flex gap-4">
+                    <div className="flex w-6 shrink-0 justify-center pt-2">
+                      <div
+                        className="h-3 w-3 shrink-0 rounded-full border-2 bg-[var(--bg)] shadow-[0_0_8px_currentColor]"
+                        style={{
+                          borderColor: SEV_COLORS[m.severity] ?? "#a1a1aa",
+                        }}
+                      />
                     </div>
-                  </button>
-                </div>
-              ))}
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-4 text-left transition-colors hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
+                      onClick={() => setModal(m)}
+                    >
+                      <div className="font-[family-name:var(--font-orbitron)] text-[11px] uppercase tracking-wide text-fg-secondary">{m.year}</div>
+                      <div className="mt-1 font-[family-name:var(--font-space-mono)] text-sm font-bold">{m.name}</div>
+                      <p className="mt-2 line-clamp-3 text-sm text-fg-soft">{m.desc}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Pill cat={m.category} />
+                        <SevDot sev={m.severity} />
+                      </div>
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
