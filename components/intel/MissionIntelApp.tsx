@@ -3,6 +3,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { DataCredits } from "@/components/layout/DataCredits";
+import { AgencyBackdropLogos } from "@/components/ui/AgencyBackdropLogos";
+import { MissileGlyphAnimated, RocketGlyphAnimated } from "@/components/ui/AeroVehicleDecor";
 import {
   Bar,
   BarChart,
@@ -296,7 +299,8 @@ export function MissionIntelApp() {
   );
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-foreground">
+    <div className="relative isolate min-h-screen bg-[var(--bg)] text-foreground">
+      <AgencyBackdropLogos variant="muted" />
       <header className="sticky top-0 z-[200] flex flex-wrap items-center gap-4 border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_96%,transparent)] px-6 py-4 backdrop-blur-xl">
         <div>
           <Link href="/" className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-[0.08em]">
@@ -315,9 +319,15 @@ export function MissionIntelApp() {
           {tabBtn("patterns", "Patterns")}
           {tabBtn("analyzer", "Analyzer", true)}
         </nav>
-        <div className="ml-auto flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-muted">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-accent shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
-          LIVE
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+          <div className="hidden items-center gap-2 sm:flex" aria-hidden>
+            <RocketGlyphAnimated className="h-8 w-6 text-accent" />
+            <MissileGlyphAnimated className="h-5 w-14 text-fg-secondary" />
+          </div>
+          <div className="flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-muted">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-accent shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
+            LIVE
+          </div>
         </div>
       </header>
 
@@ -682,21 +692,36 @@ export function MissionIntelApp() {
           )}
 
           {tab === "analyzer" && (
-            <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
-              <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-foreground">Structural analysis workflow</h3>
-              <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
-                Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
-              </p>
+            <div className="clip-panel relative overflow-hidden border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-0.5 animate-border-shimmer opacity-60"
+                aria-hidden
+              />
+              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5">
+                <RocketGlyphAnimated className="h-11 w-8 text-accent sm:translate-y-0.5" />
+                <div>
+                  <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-foreground">Structural analysis workflow</h3>
+                  <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
+                    Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
+                  </p>
+                </div>
+                <MissileGlyphAnimated className="h-8 w-[4.25rem] text-fg-muted sm:translate-y-0.5" />
+              </div>
               <Link
                 href="/analyze"
-                className="mt-8 inline-flex rounded-md bg-accent px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-on-accent hover:opacity-90"
+                className="mt-8 inline-flex items-center gap-2 rounded-md bg-accent px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-on-accent transition-[transform,filter] hover:opacity-90 active:scale-[0.99]"
               >
+                <RocketGlyphAnimated className="h-5 w-4" palette="onAccent" />
                 Open analyzer
               </Link>
             </div>
           )}
         </main>
       </div>
+
+      <footer className="mx-auto mt-10 max-w-[1400px] border-t border-[color-mix(in_oklab,var(--rim)_10%,transparent)] px-4 pb-10 pt-8 sm:px-6">
+        <DataCredits className="max-w-3xl text-balance" />
+      </footer>
 
       <MissionModal m={modal} onClose={() => setModal(null)} />
     </div>
