@@ -4,7 +4,7 @@ import type { VehicleType } from "@/types/astroflow";
 import { VEHICLE_LABEL } from "@/lib/constants";
 
 function VehicleGlyph({ type }: { type: VehicleType }) {
-  const cls = "h-10 w-10 shrink-0 text-[var(--accent)]";
+  const cls = "h-10 w-10 shrink-0 text-accent";
   switch (type) {
     case "rocket":
       return (
@@ -49,7 +49,7 @@ export function VehicleCard({ type, selected, onSelect }: Props) {
     <button
       type="button"
       onClick={onSelect}
-      className={`group relative flex flex-col gap-3 overflow-hidden border bg-[var(--surface)] p-6 text-left transition-all clip-panel animate-fadein hover:border-[var(--cyan)] ${
+      className={`group relative flex flex-col gap-3 overflow-hidden border bg-[var(--surface)] p-6 text-left transition-all clip-panel animate-fadein hover:border-info/50 ${
         selected
           ? "border-[color-mix(in_oklab,var(--accent)_55%,transparent)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--rim)_12%,transparent)]"
           : "border-[color-mix(in_oklab,var(--rim)_12%,transparent)]"
@@ -57,19 +57,19 @@ export function VehicleCard({ type, selected, onSelect }: Props) {
     >
       <div className="flex items-start justify-between gap-3">
         <VehicleGlyph type={type} />
-        <span className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-widest text-[color-mix(in_oklab,var(--cyan)_70%,transparent)]">
+        <span className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-widest text-info/80">
           {type}
         </span>
       </div>
       <div>
-        <h3 className="font-[family-name:var(--font-orbitron)] text-lg tracking-wide text-[var(--text)]">
+        <h3 className="font-[family-name:var(--font-orbitron)] text-lg tracking-wide text-foreground">
           {VEHICLE_LABEL[type]}
         </h3>
-        <p className="mt-1 font-[family-name:var(--font-rajdhani)] text-sm text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
+        <p className="mt-1 font-[family-name:var(--font-rajdhani)] text-sm text-fg-soft">
           {BLURB[type]}
         </p>
       </div>
-      <span className="font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--accent)] opacity-0 transition-opacity group-hover:opacity-100">
+      <span className="font-[family-name:var(--font-space-mono)] text-[11px] text-accent opacity-0 transition-opacity group-hover:opacity-100">
         Select configuration →
       </span>
     </button>

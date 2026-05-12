@@ -22,19 +22,19 @@ export function StepIndicator({ current }: Props) {
             key={s.id}
             className={`flex items-center gap-2 rounded-sm px-2 py-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider transition-colors ${
               active
-                ? "bg-[color-mix(in_oklab,var(--accent)_22%,transparent)] text-[var(--accent)]"
+                ? "bg-[color-mix(in_oklab,var(--accent)_22%,transparent)] text-accent"
                 : done
-                  ? "text-[color-mix(in_oklab,var(--cyan)_75%,transparent)]"
-                  : "text-[color-mix(in_oklab,var(--text)_45%,transparent)]"
+                  ? "text-info/85"
+                  : "text-fg-ghost"
             }`}
           >
             <span
               className={`inline-flex h-6 min-w-6 items-center justify-center rounded-sm border text-[10px] ${
                 active
-                  ? "border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
+                  ? "border-accent bg-[color-mix(in_oklab,var(--accent)_15%,transparent)]"
                   : done
-                    ? "border-[color-mix(in_oklab,var(--cyan)_45%,transparent)]"
-                    : "border-[color-mix(in_oklab,var(--text)_25%,transparent)]"
+                    ? "border-info/45"
+                    : "border-foreground/25"
               }`}
             >
               {s.short}

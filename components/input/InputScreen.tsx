@@ -22,7 +22,7 @@ export function InputScreen() {
   if (!vType) {
     return (
       <AppShell step={2}>
-        <p className="font-[family-name:var(--font-space-mono)] text-sm text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <p className="font-[family-name:var(--font-space-mono)] text-sm text-fg-caption">
           Redirecting…
         </p>
       </AppShell>
@@ -35,7 +35,7 @@ export function InputScreen() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/analyze"
-            className="font-[family-name:var(--font-space-mono)] text-xs uppercase tracking-wider text-[var(--cyan)] hover:text-[var(--accent)]"
+            className="font-[family-name:var(--font-space-mono)] text-xs uppercase tracking-wider text-info hover:text-accent"
           >
             ← Change vehicle
           </Link>

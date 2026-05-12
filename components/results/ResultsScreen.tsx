@@ -24,7 +24,7 @@ export function ResultsScreen() {
   if (!vType || !result || analysisRunId === 0) {
     return (
       <AppShell step={3}>
-        <p className="font-[family-name:var(--font-space-mono)] text-sm text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <p className="font-[family-name:var(--font-space-mono)] text-sm text-fg-caption">
           Redirecting…
         </p>
       </AppShell>
@@ -41,19 +41,19 @@ export function ResultsScreen() {
           <button
             type="button"
             onClick={() => router.push("/analyze/input")}
-            className="font-[family-name:var(--font-space-mono)] text-xs uppercase tracking-wider text-[var(--cyan)] hover:text-[var(--accent)]"
+            className="font-[family-name:var(--font-space-mono)] text-xs uppercase tracking-wider text-info hover:text-accent"
           >
             ← MODIFY PARAMETERS
           </button>
           <Link
             href="/"
-            className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-widest text-[color-mix(in_oklab,var(--text)_45%,transparent)] hover:text-[var(--text)]"
+            className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-widest text-fg-ghost hover:text-foreground"
           >
             Home
           </Link>
         </div>
 
-        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.35em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.35em] text-fg-caption">
           03 — Analysis Results — {vehicleTitle}
         </p>
 
@@ -68,7 +68,7 @@ export function ResultsScreen() {
         <MissionHistoryPanel historical={result.historical} />
 
         <section className="flex flex-col gap-4">
-          <h2 className="font-[family-name:var(--font-orbitron)] text-lg tracking-wide text-[var(--text)]">
+          <h2 className="font-[family-name:var(--font-orbitron)] text-lg tracking-wide text-foreground">
             Calculated metrics
           </h2>
           <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(130px,1fr))]">

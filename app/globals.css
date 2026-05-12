@@ -1,21 +1,18 @@
 @import "tailwindcss";
 
-/* Light theme — crisp white surfaces, navy ink + steel blues */
+/*
+ * AstroFlow design tokens — single source for text and status colors.
+ * Components should use theme utilities (text-fg-caption, text-success, …)
+ * instead of ad-hoc color-mix / hex on text.
+ */
 :root {
   --bg: #f0f4fb;
   --surface: #ffffff;
   --surface-muted: #e8eef7;
   --accent: #1e3a5f;
-  --cyan: #4a6fa5;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --pass: #166534;
-  --fail: #b91c1c;
-  --marginal: #a16207;
   --on-accent: #ffffff;
   --border: #c7d6eb;
   --input-bg: #ffffff;
-  /* Mix into transparent for borders / hovers — deep navy */
   --rim: #0c1929;
   --clip: polygon(
     0 0,
@@ -25,11 +22,53 @@
     14px 100%,
     0 calc(100% - 14px)
   );
+
+  /* Foreground scale */
+  --foreground: #0f172a;
+  --foreground-secondary: #334155;
+  --foreground-muted: #64748b;
+  --foreground-caption: color-mix(in oklab, var(--foreground) 55%, transparent);
+  --foreground-soft: color-mix(in oklab, var(--foreground) 72%, transparent);
+  --foreground-ghost: color-mix(in oklab, var(--foreground) 45%, transparent);
+
+  /* Status — WCAG-friendly on light surfaces */
+  --semantic-success: #166534;
+  --semantic-danger: #b91c1c;
+  --semantic-warning: #a16207;
+  --semantic-info: #4a6fa5;
+
+  /* Legacy aliases (charts, keyframes, inline styles) */
+  --text: var(--foreground);
+  --text-muted: var(--foreground-muted);
+  --pass: var(--semantic-success);
+  --fail: var(--semantic-danger);
+  --marginal: var(--semantic-warning);
+  --cyan: var(--semantic-info);
+
+  /* Links / interactive secondary */
+  --link: var(--semantic-info);
+  --link-hover: var(--accent);
 }
 
 @theme inline {
   --font-sans: var(--font-rajdhani);
   --font-mono: var(--font-space-mono);
+
+  --color-foreground: var(--foreground);
+  --color-fg-secondary: var(--foreground-secondary);
+  --color-fg-muted: var(--foreground-muted);
+  --color-fg-caption: var(--foreground-caption);
+  --color-fg-soft: var(--foreground-soft);
+  --color-fg-ghost: var(--foreground-ghost);
+
+  --color-success: var(--semantic-success);
+  --color-danger: var(--semantic-danger);
+  --color-warning: var(--semantic-warning);
+  --color-info: var(--semantic-info);
+
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-link: var(--link);
 }
 
 @keyframes fadein {
@@ -116,6 +155,6 @@
 
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--foreground);
   font-family: var(--font-rajdhani), system-ui, sans-serif;
 }

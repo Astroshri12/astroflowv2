@@ -19,7 +19,7 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
   return (
     <div className="flex flex-col gap-8 animate-fadein">
       <div>
-        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.25em] text-[var(--cyan)]">
+        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.25em] text-info">
           Active criteria
         </p>
         <div className="mt-3">
@@ -28,10 +28,10 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
       </div>
 
       <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--surface)] p-6 sm:p-8">
-        <h2 className="font-[family-name:var(--font-orbitron)] text-xl tracking-wide text-[var(--text)]">
+        <h2 className="font-[family-name:var(--font-orbitron)] text-xl tracking-wide text-foreground">
           {VEHICLE_LABEL[vType]} parameters
         </h2>
-        <p className="mt-2 font-[family-name:var(--font-rajdhani)] text-sm text-[color-mix(in_oklab,var(--text)_68%,transparent)]">
+        <p className="mt-2 font-[family-name:var(--font-rajdhani)] text-sm text-fg-soft">
           Defaults match typical classroom sizing. Adjust values to explore margins.
         </p>
 
@@ -44,7 +44,7 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
         >
           {fields.map((f) => (
             <label key={f.key} className="flex flex-col gap-2">
-              <span className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-[color-mix(in_oklab,var(--text)_75%,transparent)]">
+              <span className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-fg-caption">
                 {f.label}
                 {f.unit ? ` (${f.unit})` : ""}
               </span>
@@ -56,7 +56,7 @@ export function InputForm({ vType, inputs, onChange, onSubmit }: Props) {
                   const v = parseFloat(e.target.value);
                   if (!Number.isNaN(v)) onChange(f.key, v);
                 }}
-                className="rounded-sm border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-sm text-[var(--text)] outline-none transition-colors focus:border-[color-mix(in_oklab,var(--accent)_50%,transparent)] focus:ring-1 focus:ring-[color-mix(in_oklab,var(--rim)_18%,transparent)]"
+                className="rounded-sm border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-sm text-foreground outline-none transition-colors focus:border-accent/50 focus:ring-1 focus:ring-[color-mix(in_oklab,var(--rim)_18%,transparent)]"
               />
             </label>
           ))}

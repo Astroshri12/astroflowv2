@@ -15,18 +15,18 @@ const verdictStyle: Record<
   { text: string; border: string; glow: string }
 > = {
   PASS: {
-    text: "text-[var(--pass)]",
-    border: "border-[color-mix(in_oklab,var(--pass)_45%,transparent)]",
+    text: "text-success",
+    border: "border-success/45",
     glow: "shadow-[0_0_32px_color-mix(in_oklab,var(--rim)_10%,transparent)]",
   },
   MARGINAL: {
-    text: "text-[var(--marginal)]",
-    border: "border-[color-mix(in_oklab,var(--marginal)_50%,transparent)]",
+    text: "text-warning",
+    border: "border-warning/50",
     glow: "shadow-[0_0_28px_color-mix(in_oklab,var(--rim)_8%,transparent)]",
   },
   FAIL: {
-    text: "text-[var(--fail)]",
-    border: "border-[color-mix(in_oklab,var(--fail)_55%,transparent)]",
+    text: "text-danger",
+    border: "border-danger/55",
     glow: "shadow-[0_0_24px_color-mix(in_oklab,var(--fail)_18%,transparent)]",
   },
 };
@@ -46,7 +46,7 @@ export function VerdictBanner({
     >
       <div className="pointer-events-none absolute inset-0 animate-scan opacity-40" />
       <div className="relative flex flex-col items-center text-center">
-        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.35em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-[0.35em] text-fg-caption">
           Combined verdict · physics + mission archive
         </p>
         <p
@@ -54,23 +54,23 @@ export function VerdictBanner({
         >
           {verdict}
         </p>
-        <p className="mt-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <p className="mt-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wider text-fg-caption">
           Physics-only screening:{" "}
           <span
             className={
               physicsVerdict === verdict
-                ? "text-[color-mix(in_oklab,var(--text)_75%,transparent)]"
-                : "text-[var(--marginal)]"
+                ? "text-fg-secondary"
+                : "text-warning"
             }
           >
             {physicsVerdict}
           </span>
           {physicsVerdict !== verdict ? " · adjusted using archive analogs" : ""}
         </p>
-        <p className="mt-4 max-w-2xl font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-[color-mix(in_oklab,var(--text)_78%,transparent)]">
+        <p className="mt-4 max-w-2xl font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
           {fusionNote}
         </p>
-        <p className="mt-4 font-[family-name:var(--font-rajdhani)] text-sm text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
+        <p className="mt-4 font-[family-name:var(--font-rajdhani)] text-sm text-fg-soft">
           {flagged} metrics flagged · {total} physics checks total
         </p>
       </div>

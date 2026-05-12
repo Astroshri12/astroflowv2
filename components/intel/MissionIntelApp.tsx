@@ -31,10 +31,10 @@ const CAT_COLORS: Record<FailureCategory, string> = {
 };
 
 const SEV_COLORS: Record<string, string> = {
-  CRITICAL: "#0c1929",
-  HIGH: "#1e3a5f",
-  MEDIUM: "#3d5a80",
-  LOW: "#94a3b8",
+  CRITICAL: "var(--semantic-danger)",
+  HIGH: "var(--accent)",
+  MEDIUM: "var(--semantic-info)",
+  LOW: "var(--foreground-muted)",
 };
 
 const CHART_COLS = [
@@ -50,7 +50,7 @@ const CHART_COLS = [
 type StatGlyphVariant = "missions" | "cost" | "fatalities" | "critical";
 
 function StatGlyph({ variant }: { variant: StatGlyphVariant }) {
-  const cls = "h-8 w-8 shrink-0 text-[var(--accent)]";
+  const cls = "h-8 w-8 shrink-0 text-accent";
   switch (variant) {
     case "missions":
       return (
@@ -134,13 +134,13 @@ function MissionModal({
       >
         <button
           type="button"
-          className="absolute right-4 top-4 rounded border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_8%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
+          className="absolute right-4 top-4 rounded border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_8%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[11px] text-foreground"
           onClick={onClose}
         >
           Close
         </button>
-        <h3 className="font-[family-name:var(--font-orbitron)] text-xl font-black text-[var(--text)]">{m.name}</h3>
-        <p className="mt-2 font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+        <h3 className="font-[family-name:var(--font-orbitron)] text-xl font-black text-foreground">{m.name}</h3>
+        <p className="mt-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">
           {m.year} · {m.agency} · {m.type}
         </p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -153,9 +153,9 @@ function MissionModal({
             [
               "Casualties",
               m.casualties > 0 ? (
-                <span className="text-[var(--fail)]">{m.casualties} fatalities (recorded)</span>
+                <span className="text-danger">{m.casualties} fatalities (recorded)</span>
               ) : (
-                <span className="text-[var(--pass)]">None</span>
+                <span className="text-success">None</span>
               ),
             ],
           ].map(([lbl, val]) => (
@@ -163,7 +163,7 @@ function MissionModal({
               key={String(lbl)}
               className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-3"
             >
-              <div className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+              <div className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-fg-caption">
                 {lbl}
               </div>
               <div className="mt-1 text-sm">{val as ReactNode}</div>
@@ -172,25 +172,25 @@ function MissionModal({
         </div>
         <div className="mt-6 space-y-4 text-sm leading-relaxed">
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-secondary">
               Failure description
             </h4>
             <p className="mt-2">{m.desc}</p>
           </section>
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-secondary">
               Root cause
             </h4>
             <p className="mt-2">{m.root}</p>
           </section>
           <section>
-            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_75%,transparent)]">
+            <h4 className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] pb-1 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-soft">
               Lessons learned
             </h4>
             <ul className="mt-3 space-y-2 rounded-md border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-4">
               {m.lessons.map((l, i) => (
                 <li key={i} className="flex gap-2 text-sm">
-                  <span className="font-bold text-[var(--accent)]">›</span>
+                  <span className="font-bold text-accent">›</span>
                   <span>{l}</span>
                 </li>
               ))}
@@ -286,9 +286,9 @@ export function MissionIntelApp() {
       className={`rounded px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide transition-colors ${
         tab === t
           ? highlight
-            ? "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-[var(--text)]"
-            : "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-[var(--accent)]"
-          : "border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] text-[color-mix(in_oklab,var(--text)_55%,transparent)] hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
+            ? "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-foreground"
+            : "border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-[color-mix(in_oklab,var(--rim)_6%,transparent)] text-accent"
+          : "border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] text-fg-caption hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
       }`}
     >
       {label}
@@ -296,15 +296,15 @@ export function MissionIntelApp() {
   );
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)]">
+    <div className="relative min-h-screen bg-[var(--bg)] text-foreground">
       <header className="sticky top-0 z-[200] flex flex-wrap items-center gap-4 border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_96%,transparent)] px-6 py-4 backdrop-blur-xl">
         <div>
           <Link href="/" className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-[0.08em]">
-            <span className="text-[var(--text)]">
-              ASTRO<span className="text-[var(--accent)]">FLOW</span>
+            <span className="text-foreground">
+              ASTRO<span className="text-accent">FLOW</span>
             </span>
           </Link>
-          <p className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-[0.15em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+          <p className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-[0.15em] text-fg-caption">
             Mission intelligence · {missions.length} failures indexed
           </p>
         </div>
@@ -315,32 +315,32 @@ export function MissionIntelApp() {
           {tabBtn("patterns", "Patterns")}
           {tabBtn("analyzer", "Analyzer", true)}
         </nav>
-        <div className="ml-auto flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_65%,transparent)]">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--accent)] shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
+        <div className="ml-auto flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-muted">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-accent shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
           LIVE
         </div>
       </header>
 
       <div className="mx-auto grid max-w-[1400px] gap-6 px-4 py-8 lg:grid-cols-[260px_1fr]">
         <aside className="flex h-fit flex-col gap-3 rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_96%,var(--bg))] p-4 lg:sticky lg:top-[88px]">
-          <p className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-[0.2em] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+          <p className="font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-[0.2em] text-fg-caption">
             Search & filter
           </p>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Mission, vehicle, agency…"
-            className="w-full rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-xs text-[var(--text)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,transparent)]"
+            className="w-full rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-2 font-[family-name:var(--font-space-mono)] text-xs text-foreground outline-none focus:border-accent/45"
           />
           <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
-            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-fg-caption">
               Category
             </p>
             <div className="flex flex-wrap gap-1">
               <button
                 type="button"
                 onClick={() => setCatF("ALL")}
-                className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${catF === "ALL" ? "border border-[var(--accent)] text-[var(--accent)]" : "border border-transparent text-[color-mix(in_oklab,var(--text)_55%,transparent)]"}`}
+                className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${catF === "ALL" ? "border border-accent text-accent" : "border border-transparent text-fg-caption"}`}
               >
                 ALL
               </button>
@@ -349,7 +349,7 @@ export function MissionIntelApp() {
                   type="button"
                   key={c}
                   onClick={() => setCatF(catF === c ? "ALL" : c)}
-                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${catF === c ? "border border-[var(--accent)] text-[var(--accent)]" : "border border-transparent text-[color-mix(in_oklab,var(--text)_55%,transparent)]"}`}
+                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${catF === c ? "border border-accent text-accent" : "border border-transparent text-fg-caption"}`}
                 >
                   {c}
                 </button>
@@ -357,7 +357,7 @@ export function MissionIntelApp() {
             </div>
           </div>
           <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
-            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-fg-caption">
               Era
             </p>
             <div className="flex flex-wrap gap-1">
@@ -366,7 +366,7 @@ export function MissionIntelApp() {
                   type="button"
                   key={v}
                   onClick={() => setEraF(v)}
-                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[9px] uppercase ${eraF === v ? "border border-[var(--accent)] text-[var(--accent)]" : "border border-transparent text-[color-mix(in_oklab,var(--text)_55%,transparent)]"}`}
+                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[9px] uppercase ${eraF === v ? "border border-accent text-accent" : "border border-transparent text-fg-caption"}`}
                 >
                   {l}
                 </button>
@@ -374,14 +374,14 @@ export function MissionIntelApp() {
             </div>
           </div>
           <div className="rounded-md border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface-muted)_95%,transparent)] p-3">
-            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase text-fg-caption">
               Severity
             </p>
             <div className="flex flex-wrap gap-1">
               <button
                 type="button"
                 onClick={() => setSevF("ALL")}
-                className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${sevF === "ALL" ? "border border-[var(--accent)] text-[var(--accent)]" : ""}`}
+                className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${sevF === "ALL" ? "border border-accent text-accent" : "border border-transparent text-fg-caption"}`}
               >
                 ALL
               </button>
@@ -390,7 +390,7 @@ export function MissionIntelApp() {
                   type="button"
                   key={s}
                   onClick={() => setSevF(sevF === s ? "ALL" : s)}
-                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${sevF === s ? "border border-[var(--accent)] text-[var(--accent)]" : ""}`}
+                  className={`rounded px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase ${sevF === s ? "border border-accent text-accent" : "border border-transparent text-fg-caption"}`}
                 >
                   {s}
                 </button>
@@ -399,12 +399,12 @@ export function MissionIntelApp() {
           </div>
           <div className="space-y-2 border-t border-[color-mix(in_oklab,var(--rim)_8%,transparent)] pt-4 font-[family-name:var(--font-space-mono)] text-[11px]">
             <div className="flex justify-between rounded bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-2 py-2">
-              <span className="text-[color-mix(in_oklab,var(--text)_55%,transparent)]">Filtered</span>
-              <span className="text-[var(--accent)]">{filtered.length}</span>
+              <span className="text-fg-caption">Filtered</span>
+              <span className="text-accent">{filtered.length}</span>
             </div>
             <div className="flex justify-between rounded bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-2 py-2">
-              <span className="text-[color-mix(in_oklab,var(--text)_55%,transparent)]">Casualties</span>
-              <span className="text-[var(--accent)]">{totalDeaths}</span>
+              <span className="text-fg-caption">Casualties</span>
+              <span className="text-accent">{totalDeaths}</span>
             </div>
           </div>
           <button
@@ -420,7 +420,7 @@ export function MissionIntelApp() {
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="mt-2 w-full rounded-md border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-transparent py-2.5 font-[family-name:var(--font-orbitron)] text-[11px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:bg-[color-mix(in_oklab,var(--rim)_6%,transparent)]"
+            className="mt-2 w-full rounded-md border border-[color-mix(in_oklab,var(--rim)_18%,transparent)] bg-transparent py-2.5 font-[family-name:var(--font-orbitron)] text-[11px] font-bold uppercase tracking-wider text-foreground transition-colors hover:bg-[color-mix(in_oklab,var(--rim)_6%,transparent)]"
           >
             Download HTML report
           </button>
@@ -464,17 +464,17 @@ export function MissionIntelApp() {
                   >
                     <div className="absolute left-0 right-0 top-0 h-px bg-[color-mix(in_oklab,var(--rim)_18%,transparent)]" />
                     <StatGlyph variant={variant} />
-                    <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black text-[var(--accent)]">{val}</div>
-                    <div className="mt-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+                    <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black text-accent">{val}</div>
+                    <div className="mt-2 font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-fg-caption">
                       {label}
                     </div>
-                    <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[10px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">{sub}</div>
+                    <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[10px] text-fg-caption">{sub}</div>
                   </div>
                 ))}
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
-                  <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+                  <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
                     Failure categories
                   </p>
                   <ResponsiveContainer width="100%" height={220}>
@@ -505,7 +505,7 @@ export function MissionIntelApp() {
                   </ResponsiveContainer>
                 </div>
                 <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--surface)_82%,var(--bg))] p-4">
-                  <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+                  <p className="mb-4 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
                     Failures by decade
                   </p>
                   <ResponsiveContainer width="100%" height={220}>
@@ -533,13 +533,13 @@ export function MissionIntelApp() {
           {tab === "missions" && (
             <div>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <p className="font-[family-name:var(--font-space-mono)] text-xs text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
-                  Showing <span className="text-[var(--cyan)]">{filtered.length}</span> of {missions.length}
+                <p className="font-[family-name:var(--font-space-mono)] text-xs text-fg-caption">
+                  Showing <span className="text-info">{filtered.length}</span> of {missions.length}
                 </p>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--text)]"
+                  className="rounded border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[var(--input-bg)] px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[11px] text-foreground"
                 >
                   <option value="year-desc">Year ↓</option>
                   <option value="year-asc">Year ↑</option>
@@ -554,7 +554,7 @@ export function MissionIntelApp() {
                       {["Mission", "Year", "Agency", "Vehicle", "Type", "Severity", "Cost", ""].map((h) => (
                         <th
                           key={h}
-                          className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] px-4 py-3 text-left font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_82%,var(--rim))]"
+                          className="border-b border-[color-mix(in_oklab,var(--rim)_12%,transparent)] px-4 py-3 text-left font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wide text-fg-secondary"
                         >
                           {h}
                         </th>
@@ -569,20 +569,20 @@ export function MissionIntelApp() {
                         onClick={() => setModal(m)}
                       >
                         <td className="px-4 py-3 font-semibold">{m.name}</td>
-                        <td className="px-4 py-3 font-[family-name:var(--font-space-mono)] text-[var(--cyan)]">{m.year}</td>
+                        <td className="px-4 py-3 font-[family-name:var(--font-space-mono)] text-info">{m.year}</td>
                         <td className="px-4 py-3">{m.agency}</td>
-                        <td className="px-4 py-3 text-[color-mix(in_oklab,var(--text)_65%,transparent)]">{m.vehicle}</td>
+                        <td className="px-4 py-3 text-fg-muted">{m.vehicle}</td>
                         <td className="px-4 py-3">
                           <Pill cat={m.category} />
                         </td>
                         <td className="px-4 py-3">
                           <SevDot sev={m.severity} />
                         </td>
-                        <td className="px-4 py-3 font-[family-name:var(--font-space-mono)] text-[var(--pass)]">${m.cost}M</td>
+                        <td className="px-4 py-3 font-[family-name:var(--font-space-mono)] text-info">${m.cost}M</td>
                         <td className="px-4 py-3">
                           <button
                             type="button"
-                            className="rounded border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] text-[color-mix(in_oklab,var(--text)_75%,transparent)]"
+                            className="rounded border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] px-2 py-1 font-[family-name:var(--font-space-mono)] text-[10px] text-fg-soft"
                             onClick={(e) => {
                               e.stopPropagation();
                               setModal(m);
@@ -613,9 +613,9 @@ export function MissionIntelApp() {
                     className="w-full rounded-lg border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-4 text-left transition-colors hover:border-[color-mix(in_oklab,var(--rim)_22%,transparent)]"
                     onClick={() => setModal(m)}
                   >
-                    <div className="font-[family-name:var(--font-orbitron)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_70%,transparent)]">{m.year}</div>
+                    <div className="font-[family-name:var(--font-orbitron)] text-[11px] uppercase tracking-wide text-fg-secondary">{m.year}</div>
                     <div className="mt-1 font-[family-name:var(--font-space-mono)] text-sm font-bold">{m.name}</div>
-                    <p className="mt-2 line-clamp-3 text-sm text-[color-mix(in_oklab,var(--text)_68%,transparent)]">{m.desc}</p>
+                    <p className="mt-2 line-clamp-3 text-sm text-fg-soft">{m.desc}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Pill cat={m.category} />
                       <SevDot sev={m.severity} />
@@ -628,7 +628,7 @@ export function MissionIntelApp() {
 
           {tab === "patterns" && (
             <div className="space-y-6">
-              <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_55%,transparent)]">
+              <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
                 Root cause pattern analysis
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -638,11 +638,11 @@ export function MissionIntelApp() {
                     const pct = Math.round((d.value / missions.length) * 100);
                     return (
                       <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
-                        <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-[color-mix(in_oklab,var(--text)_55%,transparent)]">{d.name}</div>
+                        <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">{d.name}</div>
                         <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
                           {d.value}
                         </div>
-                        <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-[var(--cyan)]">{pct}% of archive</div>
+                        <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-info">{pct}% of archive</div>
                         <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
                           <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
                         </div>
@@ -651,7 +651,7 @@ export function MissionIntelApp() {
                   })}
               </div>
               <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-6">
-                <h3 className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-[color-mix(in_oklab,var(--text)_78%,var(--rim))]">
+                <h3 className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-secondary">
                   Key systemic insights
                 </h3>
                 <ul className="mt-4 space-y-3 text-sm leading-relaxed">
@@ -663,7 +663,7 @@ export function MissionIntelApp() {
                     "Rigorous SI units and ICD discipline prevent integration errors like mixed lbf·s vs N·s.",
                   ].map((ins, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="font-bold text-[var(--accent)]">›</span>
+                      <span className="font-bold text-accent">›</span>
                       <span>{ins}</span>
                     </li>
                   ))}
@@ -674,13 +674,13 @@ export function MissionIntelApp() {
 
           {tab === "analyzer" && (
             <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
-              <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-[var(--text)]">Structural analysis workflow</h3>
-              <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-[color-mix(in_oklab,var(--text)_72%,transparent)]">
+              <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-foreground">Structural analysis workflow</h3>
+              <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
                 Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
               </p>
               <Link
                 href="/analyze"
-                className="mt-8 inline-flex rounded-md bg-[var(--accent)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-[var(--on-accent)] hover:opacity-90"
+                className="mt-8 inline-flex rounded-md bg-accent px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-on-accent hover:opacity-90"
               >
                 Open analyzer
               </Link>

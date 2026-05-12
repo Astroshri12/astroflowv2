@@ -8,8 +8,8 @@ type Props = {
 export function LawTagList({ laws, variant = "muted" }: Props) {
   const chip =
     variant === "accent"
-      ? "border-[color-mix(in_oklab,var(--rim)_22%,transparent)] bg-[color-mix(in_oklab,var(--rim)_8%,transparent)] text-[color-mix(in_oklab,var(--text)_95%,var(--rim))]"
-      : "border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] text-[color-mix(in_oklab,var(--text)_88%,transparent)]";
+      ? "border-[color-mix(in_oklab,var(--rim)_22%,transparent)] bg-[color-mix(in_oklab,var(--rim)_8%,transparent)] text-foreground"
+      : "border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] text-fg-secondary";
 
   return (
     <ul className="flex flex-wrap gap-2">
