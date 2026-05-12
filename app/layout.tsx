@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Orbitron, Rajdhani, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { AstroFlowProvider } from "@/components/providers/AstroFlowProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
     >
       <body className="min-h-full">
         <AstroFlowProvider>{children}</AstroFlowProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
