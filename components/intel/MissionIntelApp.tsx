@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DataCredits } from "@/components/layout/DataCredits";
 import { AgencyBackdropLogos } from "@/components/ui/AgencyBackdropLogos";
 import { MissileGlyphAnimated, RocketGlyphAnimated } from "@/components/ui/AeroVehicleDecor";
@@ -257,6 +257,19 @@ export function MissionIntelApp() {
     }));
   }, [missions]);
 
+  /** Patterns tab: same breakdown as sidebar / missions list (respects filters). */
+  const patternCatData = useMemo(() => {
+    const c: Partial<Record<FailureCategory, number>> = {};
+    filtered.forEach((m) => {
+      c[m.category] = (c[m.category] ?? 0) + 1;
+    });
+    return Object.entries(c).map(([name, value]) => ({
+      name: name.toUpperCase(),
+      value: value as number,
+      color: CAT_COLORS[name as FailureCategory] ?? "#888",
+    }));
+  }, [filtered]);
+
   const decData = useMemo(() => {
     const d: Record<number, number> = {};
     missions.forEach((m) => {
@@ -280,6 +293,12 @@ export function MissionIntelApp() {
     ["1990-2009", "MODERN"],
     ["2010-2025", "RECENT"],
   ] as const;
+
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (typeof window === "undefined" || window.matchMedia("(min-width: 1024px)").matches) return;
+    mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [tab]);
 
   const tabBtn = (t: TabKey, label: string, highlight?: boolean) => (
     <button
@@ -436,7 +455,7 @@ export function MissionIntelApp() {
           </button>
         </aside>
 
-        <main className="min-w-0 space-y-6">
+        <main ref={mainRef} className="min-w-0 space-y-6">
           {tab === "dashboard" && (
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -647,28 +666,50 @@ export function MissionIntelApp() {
 
           {tab === "patterns" && (
             <div className="space-y-6">
-              <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
-                Root cause pattern analysis
-              </p>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {catData
-                  .sort((a, b) => b.value - a.value)
-                  .map((d) => {
-                    const pct = Math.round((d.value / missions.length) * 100);
-                    return (
-                      <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
-                        <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">{d.name}</div>
-                        <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
-                          {d.value}
-                        </div>
-                        <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-info">{pct}% of archive</div>
-                        <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
-                          <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
-                        </div>
-                      </div>
-                    );
-                  })}
+              <div>
+                <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
+                  Root cause pattern analysis
+                </p>
+                {filtered.length > 0 && filtered.length < missions.length ? (
+                  <p className="mt-1.5 max-w-2xl text-sm text-fg-muted">
+                    Category counts match your sidebar filters ({filtered.length} of {missions.length}{" "}
+                    missions).
+                  </p>
+                ) : null}
               </div>
+              {filtered.length === 0 ? (
+                <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-6 py-10 text-center">
+                  <p className="font-[family-name:var(--font-rajdhani)] text-sm font-medium text-fg-secondary">
+                    No missions match these filters.
+                  </p>
+                  <p className="mt-2 text-sm text-fg-soft">
+                    Clear the search box or reset category, severity, and era to see category patterns
+                    again.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[...patternCatData]
+                    .sort((a, b) => b.value - a.value)
+                    .map((d) => {
+                      const pct = Math.round((d.value / filtered.length) * 100);
+                      return (
+                        <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
+                          <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">{d.name}</div>
+                          <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
+                            {d.value}
+                          </div>
+                          <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-info">
+                            {pct}% of filtered set
+                          </div>
+                          <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
+                            <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
               <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-6">
                 <h3 className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-secondary">
                   Key systemic insights
