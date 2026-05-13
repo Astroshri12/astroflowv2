@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DataCredits } from "@/components/layout/DataCredits";
+import { AgencyBackdropLogos } from "@/components/ui/AgencyBackdropLogos";
+import { MissileGlyphAnimated, RocketGlyphAnimated } from "@/components/ui/AeroVehicleDecor";
 import {
   Bar,
   BarChart,
@@ -254,6 +257,19 @@ export function MissionIntelApp() {
     }));
   }, [missions]);
 
+  /** Patterns tab: same breakdown as sidebar / missions list (respects filters). */
+  const patternCatData = useMemo(() => {
+    const c: Partial<Record<FailureCategory, number>> = {};
+    filtered.forEach((m) => {
+      c[m.category] = (c[m.category] ?? 0) + 1;
+    });
+    return Object.entries(c).map(([name, value]) => ({
+      name: name.toUpperCase(),
+      value: value as number,
+      color: CAT_COLORS[name as FailureCategory] ?? "#888",
+    }));
+  }, [filtered]);
+
   const decData = useMemo(() => {
     const d: Record<number, number> = {};
     missions.forEach((m) => {
@@ -278,6 +294,12 @@ export function MissionIntelApp() {
     ["2010-2025", "RECENT"],
   ] as const;
 
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (typeof window === "undefined" || window.matchMedia("(min-width: 1024px)").matches) return;
+    mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [tab]);
+
   const tabBtn = (t: TabKey, label: string, highlight?: boolean) => (
     <button
       type="button"
@@ -296,7 +318,8 @@ export function MissionIntelApp() {
   );
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-foreground">
+    <div className="relative isolate min-h-screen bg-[var(--bg)] text-foreground">
+      <AgencyBackdropLogos variant="muted" />
       <header className="sticky top-0 z-[200] flex flex-wrap items-center gap-4 border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[color-mix(in_oklab,var(--bg)_96%,transparent)] px-6 py-4 backdrop-blur-xl">
         <div>
           <Link href="/" className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-[0.08em]">
@@ -315,9 +338,15 @@ export function MissionIntelApp() {
           {tabBtn("patterns", "Patterns")}
           {tabBtn("analyzer", "Analyzer", true)}
         </nav>
-        <div className="ml-auto flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-muted">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-accent shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
-          LIVE
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+          <div className="hidden items-center gap-2 sm:flex" aria-hidden>
+            <RocketGlyphAnimated className="h-8 w-6 text-accent" />
+            <MissileGlyphAnimated className="h-5 w-14 text-fg-secondary" />
+          </div>
+          <div className="flex items-center gap-2 font-[family-name:var(--font-space-mono)] text-[11px] text-fg-muted">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-accent shadow-[0_0_8px_color-mix(in_oklab,var(--accent)_55%,transparent)]" />
+            LIVE
+          </div>
         </div>
       </header>
 
@@ -426,7 +455,7 @@ export function MissionIntelApp() {
           </button>
         </aside>
 
-        <main className="min-w-0 space-y-6">
+        <main ref={mainRef} className="min-w-0 space-y-6">
           {tab === "dashboard" && (
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -637,28 +666,50 @@ export function MissionIntelApp() {
 
           {tab === "patterns" && (
             <div className="space-y-6">
-              <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
-                Root cause pattern analysis
-              </p>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {catData
-                  .sort((a, b) => b.value - a.value)
-                  .map((d) => {
-                    const pct = Math.round((d.value / missions.length) * 100);
-                    return (
-                      <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
-                        <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">{d.name}</div>
-                        <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
-                          {d.value}
-                        </div>
-                        <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-info">{pct}% of archive</div>
-                        <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
-                          <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
-                        </div>
-                      </div>
-                    );
-                  })}
+              <div>
+                <p className="font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-caption">
+                  Root cause pattern analysis
+                </p>
+                {filtered.length > 0 && filtered.length < missions.length ? (
+                  <p className="mt-1.5 max-w-2xl text-sm text-fg-muted">
+                    Category counts match your sidebar filters ({filtered.length} of {missions.length}{" "}
+                    missions).
+                  </p>
+                ) : null}
               </div>
+              {filtered.length === 0 ? (
+                <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] px-6 py-10 text-center">
+                  <p className="font-[family-name:var(--font-rajdhani)] text-sm font-medium text-fg-secondary">
+                    No missions match these filters.
+                  </p>
+                  <p className="mt-2 text-sm text-fg-soft">
+                    Clear the search box or reset category, severity, and era to see category patterns
+                    again.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[...patternCatData]
+                    .sort((a, b) => b.value - a.value)
+                    .map((d) => {
+                      const pct = Math.round((d.value / filtered.length) * 100);
+                      return (
+                        <div key={d.name} className="clip-panel border border-[color-mix(in_oklab,var(--rim)_10%,transparent)] bg-[var(--surface)] p-5">
+                          <div className="font-[family-name:var(--font-space-mono)] text-[11px] text-fg-caption">{d.name}</div>
+                          <div className="font-[family-name:var(--font-orbitron)] text-3xl font-black" style={{ color: d.color }}>
+                            {d.value}
+                          </div>
+                          <div className="mt-1 font-[family-name:var(--font-space-mono)] text-[11px] text-info">
+                            {pct}% of filtered set
+                          </div>
+                          <div className="mt-3 h-1 overflow-hidden rounded bg-[color-mix(in_oklab,var(--rim)_10%,transparent)]">
+                            <div className="h-full rounded" style={{ width: `${pct}%`, background: d.color }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
               <div className="rounded-lg border border-[color-mix(in_oklab,var(--rim)_12%,transparent)] bg-[color-mix(in_oklab,var(--rim)_4%,transparent)] p-6">
                 <h3 className="border-b border-[color-mix(in_oklab,var(--rim)_10%,transparent)] pb-2 font-[family-name:var(--font-space-mono)] text-[11px] uppercase tracking-wide text-fg-secondary">
                   Key systemic insights
@@ -682,21 +733,36 @@ export function MissionIntelApp() {
           )}
 
           {tab === "analyzer" && (
-            <div className="clip-panel border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
-              <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-foreground">Structural analysis workflow</h3>
-              <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
-                Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
-              </p>
+            <div className="clip-panel relative overflow-hidden border border-[color-mix(in_oklab,var(--rim)_14%,transparent)] bg-[var(--surface)] p-8 text-center">
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-0.5 animate-border-shimmer opacity-60"
+                aria-hidden
+              />
+              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5">
+                <RocketGlyphAnimated className="h-11 w-8 text-accent sm:translate-y-0.5" />
+                <div>
+                  <h3 className="font-[family-name:var(--font-orbitron)] text-xl text-foreground">Structural analysis workflow</h3>
+                  <p className="mx-auto mt-4 max-w-lg font-[family-name:var(--font-rajdhani)] text-sm leading-relaxed text-fg-soft">
+                    Run the three-step AstroFlow analyzer (vehicle selection → parameters → fused physics + archive verdict).
+                  </p>
+                </div>
+                <MissileGlyphAnimated className="h-8 w-[4.25rem] text-fg-muted sm:translate-y-0.5" />
+              </div>
               <Link
                 href="/analyze"
-                className="mt-8 inline-flex rounded-md bg-accent px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-on-accent hover:opacity-90"
+                className="mt-8 inline-flex items-center gap-2 rounded-md bg-accent px-8 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold uppercase tracking-widest text-on-accent transition-[transform,filter] hover:opacity-90 active:scale-[0.99]"
               >
+                <RocketGlyphAnimated className="h-5 w-4" palette="onAccent" />
                 Open analyzer
               </Link>
             </div>
           )}
         </main>
       </div>
+
+      <footer className="mx-auto mt-10 max-w-[1400px] border-t border-[color-mix(in_oklab,var(--rim)_10%,transparent)] px-4 pb-10 pt-8 sm:px-6">
+        <DataCredits className="max-w-3xl text-balance" />
+      </footer>
 
       <MissionModal m={modal} onClose={() => setModal(null)} />
     </div>

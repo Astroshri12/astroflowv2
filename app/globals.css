@@ -6,7 +6,7 @@
  * instead of ad-hoc color-mix / hex on text.
  */
 :root {
-  --bg: #f0f4fb;
+  --bg: #eceff4;
   --surface: #ffffff;
   --surface-muted: #e8eef7;
   --accent: #1e3a5f;
@@ -151,6 +151,149 @@
 
 .animate-scan-line {
   animation: scan-line 1.8s ease-in-out infinite;
+}
+
+/* Decorative vehicle motion — paired with `AeroVehicleDecor` */
+@keyframes rocket-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(6deg);
+  }
+}
+
+@keyframes missile-cruise {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-2deg);
+  }
+  40% {
+    transform: translate(7px, -4px) rotate(3deg);
+  }
+  70% {
+    transform: translate(-5px, 3px) rotate(-4deg);
+  }
+}
+
+@keyframes exhaust-flicker {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scaleX(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.15);
+  }
+}
+
+@keyframes hero-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes border-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-rocket-bob {
+  animation: rocket-bob 2.4s ease-in-out infinite;
+}
+
+.animate-missile-cruise {
+  animation: missile-cruise 3.1s ease-in-out infinite;
+}
+
+.animate-exhaust-flicker {
+  animation: exhaust-flicker 0.55s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-hero-orbit {
+  animation: hero-orbit 28s linear infinite;
+}
+
+.animate-border-shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--rim) 8%, transparent),
+    color-mix(in oklab, var(--accent) 18%, transparent),
+    color-mix(in oklab, var(--rim) 8%, transparent)
+  );
+  background-size: 200% 100%;
+  animation: border-shimmer 4s ease infinite;
+}
+
+@keyframes agency-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, -16px);
+  }
+}
+
+@keyframes agency-drift-alt {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-14px, 12px);
+  }
+}
+
+@keyframes agency-drift-slow {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6px, -10px);
+  }
+}
+
+.animate-agency-drift {
+  animation: agency-drift 48s ease-in-out infinite;
+}
+
+.animate-agency-drift-alt {
+  animation: agency-drift-alt 56s ease-in-out infinite;
+  animation-delay: -18s;
+}
+
+.animate-agency-drift-slow {
+  animation: agency-drift-slow 64s ease-in-out infinite;
+  animation-delay: -9s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rocket-bob,
+  .animate-missile-cruise,
+  .animate-exhaust-flicker,
+  .animate-hero-orbit,
+  .animate-border-shimmer,
+  .animate-agency-drift,
+  .animate-agency-drift-alt,
+  .animate-agency-drift-slow,
+  .animate-glow,
+  .animate-scan,
+  .animate-pulse-dot,
+  .animate-scan-line {
+    animation: none !important;
+  }
 }
 
 body {
